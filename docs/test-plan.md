@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted. JUnit Jupiter 5.11.4 and Maven Wrapper 3.9.9 are selected. Phase 1 domain-object unit tests are implemented; service, pricing, and flow tests are deferred to their corresponding implementation phases.
+This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted. JUnit Jupiter 5.11.4 and Maven Wrapper 3.9.9 are selected. Phase 1 domain-object tests and Phase 2 interface/configuration contract tests are implemented; service, pricing, and flow tests are deferred to the business-logic phase.
 
 The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
 

@@ -6,7 +6,7 @@ The implementation follows the approved design: keep the system simple, use Java
 
 ## Project status
 
-Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects and unit tests) is complete; Phase 2 (interfaces and their contract tests) is underway. Business logic awaits confirmation between phases.
+Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects) and Phase 2 (interfaces) are complete, with 22 tests passing. Business logic awaits confirmation before implementation.
 
 ## Build and tests
 
