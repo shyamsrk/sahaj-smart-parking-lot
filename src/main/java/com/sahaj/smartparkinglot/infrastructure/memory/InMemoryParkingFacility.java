@@ -17,6 +17,8 @@ import com.sahaj.smartparkinglot.domain.exception.TicketNotFoundException;
 import com.sahaj.smartparkinglot.domain.pricing.FareCalculator;
 
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,5 +78,12 @@ public final class InMemoryParkingFacility implements EntryService, ExitService 
         ticket.markExited();
         spotInventory.releaseSpot(ticket.spotId(), ticket.id());
         return quote;
+    }
+
+    public synchronized List<ParkingTicket> activeTickets() {
+        return ticketRegistry.findAll().stream()
+                .filter(ParkingTicket::isActive)
+                .sorted(Comparator.comparing(ParkingTicket::spotId))
+                .toList();
     }
 }

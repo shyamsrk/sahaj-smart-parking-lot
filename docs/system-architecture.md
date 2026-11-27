@@ -33,7 +33,7 @@ The following diagrams visualize the proposed system boundary, internal componen
 
 ![Smart Parking Lot entry and exit workflows](diagrams/entry-exit-workflows.svg)
 
-The caller/entry point is intentionally not defined. It may be a small demonstration harness later, but no CLI, GUI, or network API is assumed by this design.
+The caller/entry point is a Java console demonstration in `com.sahaj.smartparkinglot.Main`. It supports multiple entries and exits, a view of active tickets and spot availability, and quitting; no GUI or network API is included.
 
 ## Component responsibilities and dependencies
 
@@ -45,7 +45,7 @@ The caller/entry point is intentionally not defined. It may be a small demonstra
 
 ### Domain layer
 
-- **`ParkingFacility` / in-memory state owner** contains the configured spots and tickets, including exited-ticket state for duplicate-exit detection. It owns state transitions that must remain consistent.
+- **`ParkingFacility` / in-memory state owner** contains the configured spots and tickets, including exited-ticket state for duplicate-exit detection. It owns state transitions that must remain consistent and exposes active tickets for the console status view.
 - **`SpotInventory`** checks the fixed vehicle/spot matrix, reserves an available compatible spot, and releases a spot only for the matching exited ticket.
 - **`ParkingTicket`** holds ID, entry instant, vehicle type, assigned spot ID, loyalty tier, and `ACTIVE`/`EXITED` state. A successful exit is allowed once.
 - **`ParkingStay`** is an immutable calculation input derived from an active ticket and a later exit instant.

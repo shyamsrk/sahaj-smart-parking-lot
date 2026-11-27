@@ -6,17 +6,24 @@ The implementation follows the approved design: keep the system simple, use Java
 
 ## Project status
 
-Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects) and Phase 2 (interfaces) are complete, with 22 tests passing. Business logic awaits confirmation before implementation.
+The domain, pricing policies, in-memory facility, and interactive console demo are implemented. The console supports multiple vehicle entries and exits in one run; tickets and parking state are held in memory.
 
 ## Build and tests
 
-Run the current unit test suite with:
+Run the unit test suite with:
 
 ```sh
 ./mvnw test
 ```
 
-The current domain and interface-contract suite is run with `./mvnw test`.
+Compile and start the interactive demo with:
+
+```sh
+./mvnw compile
+java -cp target/classes com.sahaj.smartparkinglot.Main
+```
+
+Use the menu to enter a vehicle, exit by ticket ID, show active tickets and available spots, or quit. For entry, provide a vehicle (`MOTORCYCLE`, `CAR`, or `BUS`), an ISO-8601 UTC entry instant (for example `2026-01-05T16:00:00Z`), and a loyalty tier (`NONE`, `SILVER`, `GOLD`, or `PLATINUM`; blank defaults to `NONE`). Exit requires the ticket ID and an ISO-8601 UTC exit instant. Bundled federal holiday data is available for 2025-2029.
 
 ## Confirmed decisions
 

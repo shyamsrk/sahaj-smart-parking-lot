@@ -6,8 +6,10 @@ import com.sahaj.smartparkinglot.domain.exception.DuplicateTicketIdException;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,6 +24,7 @@ class InMemoryTicketRegistryTest {
         registry.register(ticket);
 
         assertSame(ticket, registry.findById(ticketId).orElseThrow());
+        assertEquals(List.of(ticket), registry.findAll());
         assertTrue(registry.findById(UUID.randomUUID()).isEmpty());
     }
 
