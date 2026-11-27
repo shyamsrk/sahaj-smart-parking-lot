@@ -134,6 +134,21 @@ These typed domain/application exceptions are handled by the caller; message for
 - **Manual dependency wiring** over a DI framework: only a few services and policies need construction.
 - **OPM calendar dependency** over live holiday lookups: deterministic offline calculations; schedule distribution/refresh needs a follow-up decision.
 
+## Future enhancements
+
+These are architectural options for a later product phase, not current requirements or commitments. Keep the domain and application contracts independent from the console and infrastructure adapters. Add each capability in response to a concrete operational need; do not introduce distributed services or a rules engine preemptively.
+
+| Trigger | Potential enhancement | Architectural direction |
+|---|---|---|
+| More than one facility or frequent layout changes | Facility configuration | Move spot counts, facility ID, timezone, and calendar-resource selection out of `Main` into validated configuration. Keep each facility's inventory and pricing context explicit. |
+| State must survive restarts or multiple application instances are needed | Durable storage and transaction safety | Add persistent `TicketRegistry` and `SpotInventory` adapters behind the existing ports. Make reservation plus ticket creation, and ticket exit plus spot release, atomic in the storage transaction. Use database constraints and row/version checks to prevent duplicate reservations and exits across instances. |
+| A web, mobile, or partner client is required | Service API | Add a transport adapter that calls the existing entry, exit, and status operations. Define request validation, authentication/authorization, versioning, and idempotency for retried entry/exit requests without moving pricing rules into the API layer. |
+| The application is operated beyond a local demonstration | Observability and operations | Add structured logs with correlation IDs, metrics for occupancy, allocation failures, quote policy selection, and exit failures, plus health/readiness checks. Surface invalid or out-of-date holiday configuration at startup. |
+| Pricing changes become business-managed or need historical audit | Versioned pricing configuration | Introduce effective-dated rate/eligibility configuration only when policy changes require it. Record the pricing version used for each quote and retain regression tests for existing boundary rules. Keep policy evaluation deterministic and offline. |
+| Payment collection enters scope | Separate payment capability | Keep parking exit and fare quotation distinct from payment settlement. Add a payment adapter/state model with idempotent requests and reconciliation; do not mark a ticket exited based on an unconfirmed payment unless the product workflow explicitly requires that behavior. |
+
+For a first production-oriented step, externalize facility configuration and decide the persistence/transaction model before adding multiple instances. Add an API and payment integration only when there are real clients and settlement requirements. A modular single deployment remains a suitable target until measured load or independent release needs justify further service separation.
+
 ## Resolved architecture decisions
 
 - **Holiday data:** Keep versioned per-year resources in the repository and update them from OPM; no runtime network calls.
