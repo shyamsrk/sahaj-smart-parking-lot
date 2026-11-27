@@ -2,9 +2,9 @@
 
 ## Status and scope
 
-This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted; it does not add executable code or select a test framework. No production implementation exists yet, so no tests have been run.
+This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted; it does not add executable code. JUnit Jupiter is the selected test framework; 5.11.4 is available locally but is not yet pinned in a Maven project. No production implementation exists yet, so no tests have been run.
 
-The test approach uses the implementation language's standard test facilities only. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
+The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
 
 ## Test design principles
 
