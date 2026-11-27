@@ -75,9 +75,13 @@ The user supplied these answers to the follow-up clarification form:
 
 > Yes, proceed to Stage 3
 
+## Stage 3 review
+
+> Accept Stage 3 as written
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
 - A stage must be reviewed and confirmed before work proceeds to the next stage.
 - Push after each stage. The GitHub CLI was authenticated as `shyamsrk`; the requested repository did not exist when checked and was created for the Stage 1 push.
-- Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Stage 3 documents test strategy and scenarios.
+- Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Stage 3 documents test strategy and scenarios and was accepted as written.

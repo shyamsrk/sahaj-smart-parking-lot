@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This is the test plan for the approved Stage 1 specification and Stage 2 design. It defines what should be verified before an implementation is accepted; it does not add executable code or select a test framework. No production implementation exists yet, so no tests have been run.
+This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted; it does not add executable code or select a test framework. No production implementation exists yet, so no tests have been run.
 
 The test approach uses the implementation language's standard test facilities only. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
 

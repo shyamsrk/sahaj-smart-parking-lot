@@ -6,7 +6,7 @@ The plan follows the supplied assignment constraints: keep the design simple, us
 
 ## Project status
 
-Stage 1 (business specification) and Stage 2 (architecture and domain model) are approved and published. Stage 3 (test strategy and scenario matrix) is drafted for review; no later stage will be treated as approved until reviewed.
+Stages 1-3 (business specification, architecture/domain model, and test strategy/scenario matrix) are approved and published. No implementation stage is included in this architecture-plan deliverable.
 
 ## Confirmed decisions
 
