@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted; it does not add executable code. JUnit Jupiter is the selected test framework; 5.11.4 is available locally but is not yet pinned in a Maven project. No production implementation exists yet, so no tests have been run.
+This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted; it does not add executable code. JUnit Jupiter 5.11.4 and Maven Wrapper 3.9.9 are selected. No production implementation exists yet, so no tests have been run.
 
 The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
 
@@ -13,7 +13,7 @@ The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should
 - Inject a deterministic holiday-calendar fixture based on the US OPM schedule; tests must not make live network calls or depend on the date they run.
 - Use exact decimal values in expected fares. Verify half-up rounding separately using values that exercise the rounding boundary.
 - Use in-memory inventory and test doubles for policies/calendar collaborators where needed.
-- Keep daylight-saving ambiguous/nonexistent local-time expectations out of the acceptance suite until the unresolved rule is decided.
+- Accept `Instant` inputs only. Include DST transition tests that distinguish actual elapsed duration from local wall-clock display; do not construct ambiguous local-time inputs.
 
 ## Unit test scenarios
 
@@ -23,12 +23,18 @@ The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should
 |---|---|
 | Vehicle multipliers for Motorcycle, Car, and Bus | 0.8, 1.0, and 2.0 respectively |
 | Compatibility lookup for each supported vehicle | Motorcycle→Compact, Car→Compact, Bus→Large |
+| Generate a ticket ID | Use a unique JDK UUID |
 | Inventory contains a compatible available spot | Reserve and return a compatible spot; mark it occupied |
+| Multiple compatible spots are available | Assign the lowest canonical spot ID in ascending string order |
 | Inventory contains only incompatible or occupied spots | Reject entry with an appropriate no-compatible-spot message; do not issue a ticket or change occupancy |
 | Ticket issued without a loyalty tier | Store `None` |
 | Ticket issued with each supplied loyalty tier | Preserve the tier on the ticket |
 | Successful exit | Mark the ticket exited once and release its spot |
 | Attempt a second exit | Reject it; do not calculate/charge a second fare or release another spot |
+| Concurrent entry requests compete for one compatible spot | Exactly one request reserves it; the other receives no-space failure |
+| Concurrent exit requests use the same active ticket | Exactly one exit succeeds; the other receives an already-exited failure |
+| Annual holiday resource has valid ISO dates, including observed dates | Load as a deterministic calendar set |
+| Holiday resource is missing or malformed | Fail explicitly; do not substitute an empty/incomplete calendar |
 | Invalid vehicle, missing ticket, or malformed required input | Raise an appropriate exception; do not return a success-shaped result |
 
 ### Stay validation and time boundaries
@@ -38,7 +44,8 @@ The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should
 | Exit equals entry or precedes entry | Reject the stay |
 | Valid timezone-aware entry and later exit | Construct a valid stay with positive elapsed duration |
 | Convert an unambiguous instant to facility-local date/time | Use `America/Los_Angeles` local values for policy windows |
-| Ambiguous/nonexistent local time during a daylight-saving transition | Keep blocked from definitive expected-result tests until the rule is confirmed |
+| Spring-forward interval represented by instants (01:30 PST to 03:30 PDT) | Calculate one elapsed hour from the instant timeline |
+| Fall-back interval spanning repeated local time (first 01:30 PDT to second 01:30 PST) | Distinguish the two instants and calculate one elapsed hour |
 
 ### Standard Hourly policy
 
@@ -119,4 +126,4 @@ Half-up rounding tests use direct `Money` inputs because the current configured 
 
 ## Acceptance gate
 
-The implementation is ready for review only when all listed behavior tests pass, invalid inputs fail explicitly, tests use deterministic calendar/time data, and no test depends on an external database, API, or live holiday service. Daylight-saving ambiguous/nonexistent-time behavior and OPM schedule refresh/version policy require explicit decisions before adding corresponding edge-case tests.
+Run the suite with `./mvnw test`. The implementation is ready for review only when all listed behavior tests pass, invalid inputs fail explicitly, tests use deterministic calendar/time data, and no test depends on an external database, API, or live holiday service.

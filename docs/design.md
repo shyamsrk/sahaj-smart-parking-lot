@@ -126,9 +126,6 @@ Compare exact candidate amounts before final rounding; use the documented policy
 - **Timezone and holiday calendar configuration:** keeps the pricing rules deterministic; the initial choices are `America/Los_Angeles` and the OPM schedule.
 - **In-memory inventory and tickets:** sufficient for the assignment scope and avoids prohibited databases, at the explicit cost of losing state across process restarts.
 
-## Decisions still needed before implementation
+## Decisions resolved after Stage 2
 
-1. Holiday schedule refresh/version policy for the selected OPM source.
-2. Handling of ambiguous or nonexistent facility-local times during daylight-saving transitions.
-
-These are implementation details still requiring a decision, not assumptions. Stage 3 will add the verification/test plan based on this accepted design.
+The Stage 4 system architecture records the later decisions for holiday-resource versioning, Instant-only time input, concurrency, spot ordering, package/build settings, ticket IDs, and error types. See [`system-architecture.md`](system-architecture.md).

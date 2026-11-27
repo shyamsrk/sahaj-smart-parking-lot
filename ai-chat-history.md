@@ -91,10 +91,27 @@ Availability check: OpenJDK 17.0.21.1 and Maven 3.9.9 are installed; JUnit Jupit
 
 > Generate a system/archtiectural design and pause for the next instruction
 
+## Architecture clarification answers
+
+> Lets resolve any open questions
+
+- Holiday data: “Versioned data resource in the repository, updated from OPM”
+- Timestamp/DST: “Instant-only; elapsed duration uses the instant timeline”
+- Concurrency: “Allow concurrent calls; serialize compound in-memory state transitions”
+- Spot order: “Lowest spot ID first”
+- Java base package: `com.sahaj.smartparkinglot`
+- Build settings: “JUnit Jupiter 5.11.4; include Maven Wrapper 3.9.9”
+- Ticket IDs: “JDK UUID”
+- Error contract: “Typed domain/application exceptions; caller formats messages”
+
+## Implementation pause
+
+> pause before going in to implementation
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
 - A stage must be reviewed and confirmed before work proceeds to the next stage.
 - Push after each stage. The GitHub CLI was authenticated as `shyamsrk`; the requested repository did not exist when checked and was created for the Stage 1 push.
 - Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Stage 3 documents test strategy and scenarios and was accepted as written.
-- Java 17, Maven, and JUnit are the selected implementation stack. The system architecture document is a proposal only; implementation has not started.
+- Java 17, Maven Wrapper 3.9.9, and JUnit Jupiter 5.11.4 are the selected implementation stack. Architecture decisions include versioned OPM resource data, Instant-only time inputs, synchronized concurrent state transitions, lowest-ID spot assignment, `com.sahaj.smartparkinglot`, JDK UUIDs, and typed exceptions. Implementation has not started.

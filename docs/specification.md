@@ -91,12 +91,15 @@ These are decisions explicitly supplied by the user during specification clarifi
 15. If no compatible spot is available, reject entry with an appropriate message.
 16. Keep ticket and spot state in memory; survival across process restarts is not required.
 
-## Open questions (no behavior assumed)
+## Technical clarifications
 
-1. **Holiday calendar maintenance:** The user selected the US OPM federal holiday schedule, including observed weekdays. The schedule refresh/version policy is unspecified.
-2. **Timezone transitions:** The current implementation defaults to `America/Los_Angeles`; handling of ambiguous or nonexistent local times during daylight-saving transitions remains unspecified.
+- Supply the OPM federal/observed holiday schedule through versioned per-year repository resources; update from OPM without runtime network calls.
+- Accept entry and exit as `Instant` values only. Elapsed duration follows the instant timeline; convert to `America/Los_Angeles` local time for policy windows.
+- Permit concurrent entry/exit calls and serialize state transitions in the in-memory facility aggregate.
+- Assign the lowest compatible spot ID first using ascending natural `String` order over canonical IDs.
+- Use JDK UUID ticket IDs and typed domain/application exceptions. The caller formats error messages.
 
-These questions should be resolved before implementation. No answer is inferred in this specification.
+These clarify implementation boundaries without changing the pricing rules.
 
 ## Acceptance criteria for this specification
 
