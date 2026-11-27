@@ -6,7 +6,7 @@ The plan follows the supplied assignment constraints: keep the design simple, us
 
 ## Project status
 
-Stage 1 documents the clarified business specification. The architecture, domain model, and test plan will be prepared as later stages and will not be treated as approved until reviewed.
+Stage 1 (business specification) is approved and published. Stage 2 (architecture and domain model) is drafted for review. The test plan will be prepared as a later stage and no draft will be treated as approved until reviewed.
 
 ## Confirmed decisions
 
@@ -39,4 +39,15 @@ The specification stage records remaining questions rather than silently selecti
 - Which locale/timezone database and daylight-saving transition behavior are required for facility-local timestamps?
 - Should ticket exits/billing be single-use, and what should happen when no compatible spot is available?
 
-See [`docs/specification.md`](docs/specification.md) for the full functional specification and acceptance criteria, and [`ai-chat-history.md`](ai-chat-history.md) for the user prompts and decisions recorded for this project.
+## Design decisions and trade-offs
+
+The current Stage 2 design is a draft pending your review:
+
+- Keep entry/exit orchestration, spot inventory, and each pricing policy separate; this is clearer to test than a single service with interleaved conditionals.
+- Use three explicit policy implementations behind a small shared contract rather than a configurable rules engine; there are only three fixed policies in scope.
+- Use decimal-safe money arithmetic and round once at the final-fare boundary rather than using binary floating point or rounding each hourly segment.
+- Inject the facility timezone and federal-holiday calendar instead of embedding defaults; this avoids silently applying an unapproved location or calendar source.
+- Keep the domain plan independent of a database, web API, UI, payment framework, and selected language, as required by the assignment.
+- Durable ticket/spot state is not designed because database use is prohibited; whether tickets must survive process restarts remains unresolved.
+
+See [`docs/specification.md`](docs/specification.md) for the functional specification and acceptance criteria, [`docs/design.md`](docs/design.md) for the draft architecture and domain objects, and [`ai-chat-history.md`](ai-chat-history.md) for the user prompts and decisions recorded for this project.

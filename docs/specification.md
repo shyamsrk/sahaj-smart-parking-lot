@@ -68,7 +68,7 @@ All policy rates below are defined relative to the Car rate. Apply the relevant 
 
 ## Input validation
 
-Inputs that are invalid—including an exit time that is not after entry, missing required ticket/session data, or unsupported vehicle classification—must fail explicitly with an appropriate exception. The exact exception taxonomy and customer/tier data contract are deferred to the design stage.
+Inputs that are invalid—including an exit time that is not after entry, missing required ticket/session data, or unsupported vehicle classification—must fail explicitly with an appropriate exception. The exact exception taxonomy is deferred to the design stage. The customer's loyalty tier is stored on the ticket and defaults to None.
 
 ## Confirmed clarifications
 

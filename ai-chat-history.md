@@ -57,9 +57,13 @@ The user supplied these answers to the follow-up clarification form:
 - Loyalty tier input: “Stored on ticket”
 - GitHub owner login: “shyamsrk”
 
+## Stage 2 authorization
+
+> Yes, proceed to Stage 2
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
 - A stage must be reviewed and confirmed before work proceeds to the next stage.
-- Push after each stage. The GitHub CLI is authenticated as `shyamsrk`; the requested repository did not exist when checked and is to be created for the Stage 1 push.
-- The first stage is limited to the business specification. Design, domain model, and tests are later stages.
+- Push after each stage. The GitHub CLI was authenticated as `shyamsrk`; the requested repository did not exist when checked and was created for the Stage 1 push.
+- Stage 1 covers the business specification. Stage 2 covers architecture and domain model; tests are deferred to Stage 3.
