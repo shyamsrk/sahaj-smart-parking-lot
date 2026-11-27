@@ -27,7 +27,7 @@ Specify the behavior of a smart parking lot's ticket, spot-assignment, and rate-
 
 All listed rates are USD. Currency conversion is not needed.
 
-Tickets are issued on entry and retain a precise entry timestamp. An exit timestamp is supplied when calculating the fee. The facility's timezone is required configuration so local dates and policy time windows can be evaluated.
+Tickets are issued on entry and retain a precise entry timestamp. An exit timestamp is supplied when calculating the fee. The facility's timezone is needed to evaluate local dates and policy time windows; for the current implementation it defaults to `America/Los_Angeles`.
 
 ## Pricing requirements
 
@@ -68,14 +68,14 @@ All policy rates below are defined relative to the Car rate. Apply the relevant 
 
 ## Input validation
 
-Inputs that are invalid—including an exit time that is not after entry, missing required ticket/session data, or unsupported vehicle classification—must fail explicitly with an appropriate exception. The exact exception taxonomy is deferred to the design stage. The customer's loyalty tier is stored on the ticket and defaults to None.
+Inputs that are invalid—including an exit time that is not after entry, missing required ticket/session data, or unsupported vehicle classification—must fail explicitly with an appropriate exception. The exact exception taxonomy is an implementation decision. The customer's loyalty tier is stored on the ticket and defaults to None.
 
 ## Confirmed clarifications
 
 These are decisions explicitly supplied by the user during specification clarification:
 
-1. Use official US federal holiday dates and observed weekdays when determining weekdays. Hourly base pricing applies every day; the peak surcharge and both special rates are limited to weekdays excluding federal holidays.
-2. Facility timezone is required configuration.
+1. Use the US Office of Personnel Management (OPM) federal holiday schedule, including observed weekdays, when determining weekdays. Hourly base pricing applies every day; the peak surcharge and both special rates are limited to weekdays excluding federal holidays.
+2. Default the facility timezone to `America/Los_Angeles` for the current implementation.
 3. Use exactly the three listed vehicle/spot compatibility pairs: Motorcycle→Compact, Car→Compact, Bus→Large.
 4. A loyalty tier of None leaves Early Bird and Night Owl eligible with no discount.
 5. Apply vehicle multipliers to special rates.
@@ -85,14 +85,18 @@ These are decisions explicitly supplied by the user during specification clarifi
 9. Raise an appropriate exception for invalid inputs.
 10. Include ticket issuance, spot compatibility/assignment, and rate calculation; exclude payment.
 11. A customer's loyalty tier is stored on the ticket and defaults to None.
+12. Night Owl requires both its entry and exit dates to be weekdays excluding federal holidays.
+13. Determine fare ties from exact amounts, not from amounts that only become equal after cent rounding.
+14. A ticket may exit once only; release its spot after successful exit.
+15. If no compatible spot is available, reject entry with an appropriate message.
+16. Keep ticket and spot state in memory; survival across process restarts is not required.
 
 ## Open questions (no behavior assumed)
 
-1. **Holiday calendar implementation:** The user selected official US federal holiday dates and observed weekdays. The exact source/version and update process are still unspecified.
-2. **Timezone rules:** The facility timezone is required, but the timezone identifier source/database and handling of ambiguous or nonexistent local times during daylight-saving transitions are unspecified.
-3. **Ticket lifecycle:** The assignment does not define whether a ticket can be exited or billed more than once, or whether spot assignment failure has retry/rejection behavior.
+1. **Holiday calendar maintenance:** The user selected the US OPM federal holiday schedule, including observed weekdays. The schedule refresh/version policy is unspecified.
+2. **Timezone transitions:** The current implementation defaults to `America/Los_Angeles`; handling of ambiguous or nonexistent local times during daylight-saving transitions remains unspecified.
 
-These questions should be resolved before finalizing detailed design or implementation. No answer is inferred in this specification.
+These questions should be resolved before implementation. No answer is inferred in this specification.
 
 ## Acceptance criteria for this specification
 
@@ -100,7 +104,7 @@ These questions should be resolved before finalizing detailed design or implemen
 - Hourly pricing rounds duration upward, uses floating hourly blocks, evaluates partial peak overlap, and observes inclusive-start/exclusive-end peak windows.
 - Peak surcharges do not apply on weekends or US federal holidays; the hourly base rate remains applicable.
 - Special rates use their stated local-time/date windows, discounts, and vehicle multipliers.
-- Early Bird and Night Owl are eligible only on weekdays excluding official US federal holidays (including observed weekdays).
+- Early Bird and Night Owl are eligible only on weekdays excluding OPM federal holidays (including observed weekdays); Night Owl checks both entry and exit dates.
 - Valid policies are compared exhaustively and the lowest fare is selected with the specified tie precedence.
 - Stays exceeding 24 hours are billed using Standard Hourly alone.
 - Invalid input fails explicitly, and final USD fares use half-up cent rounding.

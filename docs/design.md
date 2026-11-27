@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft design for review. It follows the accepted Stage 1 specification and isolates unresolved operational rules; it does not select a programming language, persistence mechanism, or deployment style.
+Stage 2 design accepted. It follows the accepted Stage 1 specification and records the confirmed operational rules; it does not select a programming language, database, or deployment style.
 
 ## Architectural shape
 
@@ -37,8 +37,8 @@ ExitService ---> Stay validation ---> RateCalculator
 - **ExitService:** Accepts a ticket and exit timestamp, validates the stay, and delegates price selection. Payment is deliberately not called.
 - **RateCalculator:** Evaluates every configured policy and selects the lowest valid candidate. It owns the tie precedence but not each policy's pricing rules.
 - **Pricing policies:** `StandardHourlyPolicy`, `EarlyBirdPolicy`, and `NightOwlPolicy` each determine applicability and calculate their own exact candidate amount.
-- **PricingContext:** Supplies the required facility timezone and a federal-holiday calendar to policy evaluation. These values are injected; a silent timezone or holiday fallback is forbidden.
-- **FederalHolidayCalendar:** Answers whether a local date is a federal holiday, including observed weekdays. Its data source/version and refresh process remain to be selected.
+- **PricingContext:** Supplies the facility timezone and a federal-holiday calendar to policy evaluation. The current implementation defaults the timezone to `America/Los_Angeles`.
+- **FederalHolidayCalendar:** Answers whether a local date is a federal holiday, including observed weekdays. Use the US Office of Personnel Management (OPM) federal holiday schedule; its refresh/version policy remains to be selected.
 
 The policy set is fixed and small, so a simple collection of policy objects is preferred over a plug-in registry or externally configurable rules engine. A shared time-window predicate and shared loyalty-discount calculation avoid duplicating the common Early Bird/Night Owl behavior.
 
@@ -48,10 +48,11 @@ The policy set is fixed and small, so a simple collection of policy objects is p
 
 1. Validate vehicle classification and required request data.
 2. Find an available spot compatible with the vehicle.
-3. Reserve that spot and issue a ticket containing its identifier, entry instant, vehicle type, and loyalty tier (`None` by default).
-4. Return the ticket to the caller.
+3. If no compatible spot is available, reject entry with an appropriate message and do not issue a ticket.
+4. Otherwise, reserve that spot and issue a ticket containing its identifier, entry instant, vehicle type, and loyalty tier (`None` by default).
+5. Return the ticket to the caller.
 
-The failure/atomicity behavior if reservation or ticket creation fails, and the behavior when no compatible spot is available, are not specified. The design must not leave a reserved spot without a usable ticket; the exact recovery/transaction approach requires a decision before implementation.
+Reservation and ticket issuance must not leave a reserved spot without a usable ticket. For the in-memory scope, encapsulate both operations in the entry use case and release the reservation if ticket creation fails.
 
 ### Exit and fare calculation
 
@@ -59,10 +60,10 @@ The failure/atomicity behavior if reservation or ticket creation fails, and the 
 2. Construct a `ParkingStay` from the ticket's entry data and the supplied exit instant.
 3. Convert timestamps to facility-local calendar/time values for window and holiday checks. Preserve elapsed duration independently of the local wall clock.
 4. Ask each policy for either no candidate (inapplicable) or a `FareQuote`.
-5. Select the least expensive candidate; use Early Bird, Night Owl, then Standard Hourly for exact ties.
+5. Select the least expensive exact candidate; use Early Bird, Night Owl, then Standard Hourly only when exact amounts tie. Amounts that become equal only after rounding are not ties.
 6. Round the selected amount once to cents using half-up rounding and return the final quote.
 
-For stays over 24 elapsed hours, the calculator excludes both specials and evaluates Standard Hourly only. A successful exit does not trigger a payment operation. Whether the ticket is closed, the spot released, and repeated exits rejected is a lifecycle decision still open.
+For stays over 24 elapsed hours, the calculator excludes both specials and evaluates Standard Hourly only. On a successful exit, mark the ticket exited once and release its spot. Reject a second exit for the same ticket. A successful exit does not trigger a payment operation.
 
 ## Domain objects and responsibilities
 
@@ -72,13 +73,13 @@ For stays over 24 elapsed hours, the calculator excludes both specials and evalu
 | `SpotType` | Enum: Compact, Large | Identifies the physical spot category. |
 | `ParkingSpot` | Entity: identifier, type, occupancy/reservation state | Encapsulates reserve/release transitions; cannot be assigned to an incompatible vehicle. |
 | `SpotInventory` | Aggregate/service owning spots | Finds and reserves an available compatible spot without exposing mutable storage. |
-| `ParkingTicket` | Entity: ticket ID, entry instant, vehicle type, spot ID, loyalty tier | Captures entry facts; loyalty defaults to `None`. Further lifecycle state is not defined until repeat-exit and release rules are decided. |
+| `ParkingTicket` | Entity: ticket ID, entry instant, vehicle type, spot ID, loyalty tier, active/exited state | Captures entry facts; loyalty defaults to `None`; permits a single successful exit. |
 | `LoyaltyTier` | Enum: None, Silver, Gold, Platinum | Maps to 0%, 10%, 20%, or 30% discount respectively. |
 | `ParkingStay` | Value object: ticket facts plus exit instant | Requires exit after entry; provides elapsed duration and facility-local dates/times via context. |
 | `Money` | Value object: exact amount in USD | Uses decimal-safe arithmetic; performs half-up rounding only at the final-fare boundary. |
 | `FareQuote` | Value object: policy identity, exact candidate amount, final rounded amount | Carries the reason/policy selected for a customer-visible calculation result. |
 | `RatePolicy` | Behavior contract | Given a valid stay and pricing context, returns a candidate only if its policy applies. |
-| `PricingContext` | Value/configuration object | Holds a required facility timezone and holiday-calendar dependency. |
+| `PricingContext` | Value/configuration object | Holds the facility timezone (default `America/Los_Angeles` for the current implementation) and OPM holiday-calendar dependency. |
 
 Domain objects own invariants and domain behavior; use cases coordinate them. Avoid exposing mutable ticket or spot state directly. The model is intentionally independent of database, web, UI, and payment frameworks.
 
@@ -100,37 +101,34 @@ Each policy receives a validated `ParkingStay` and `PricingContext`, and returns
 
 - Share a small time-window/calendar eligibility helper and a loyalty-discount mapping.
 - Early Bird checks its same-date entry and exit windows; Night Owl checks its entry window and next-consecutive-date exit window.
-- Check the confirmed weekday/federal-holiday eligibility. For Night Owl, whether eligibility is determined by the entry date only or by both dates remains unresolved.
+- Check the confirmed weekday/federal-holiday eligibility on the required dates. Night Owl requires both entry and exit dates to be weekdays excluding OPM federal holidays.
 - Exclude both policies for stays longer than 24 elapsed hours.
 - Apply the tier discount to the policy's Car base rate, then the vehicle multiplier. Do not round until the selected quote is finalized.
 
 ### Best-value selection
 
-Compare exact candidate amounts before final rounding; use the documented policy precedence for equal amounts. The requirement does not say whether values that become equal only after cent rounding count as a tie; this is called out for confirmation rather than silently decided.
+Compare exact candidate amounts before final rounding; use the documented policy precedence only for exact equal amounts. Amounts that become equal only after cent rounding are not ties.
 
 ## Error behavior and boundaries
 
 - Invalid or missing required inputs fail explicitly with domain-appropriate exceptions; no success-shaped fallback is allowed.
 - Unknown vehicle or spot categories are rejected rather than assigned a default multiplier or compatibility.
-- No compatible available spot must produce an explicit allocation failure; its exact user-facing behavior is unresolved.
+- No compatible available spot rejects entry with an appropriate message and does not issue a ticket.
 - Standard Hourly is always an applicable valid-stay policy, so a valid stay should have at least one candidate.
-- All local time windows and holiday checks require the configured facility timezone. Calendar data and daylight-saving transition interpretation must be supplied/decided explicitly.
+- All local time windows and holiday checks use the facility timezone, defaulted to `America/Los_Angeles` for the current implementation. Calendar data uses the OPM holiday schedule.
 
 ## Deliberate trade-offs
 
 - **Three explicit policies instead of a generic rules engine:** simpler to reason about and test for the fixed set in the assignment; adding policies later would require implementing the same small contract.
 - **Exact decimal arithmetic instead of binary floating point:** avoids currency drift and supports the required final half-up rounding.
 - **Policy objects plus one calculator instead of condition chains in a monolith:** policy behavior remains cohesive while exhaustive evaluation and minimum selection stay centralized.
-- **No persistence or API layer in this design:** the assignment prohibits databases and heavy frameworks and focuses on the domain. Ticket/spot lifetime across process restarts is therefore not guaranteed by this plan and must be clarified if required.
-- **Injected timezone and holiday calendar:** keeps the pricing rules deterministic and makes external calendar/timezone behavior explicit without selecting an unapproved provider.
+- **No persistence or API layer in this design:** the assignment prohibits databases and heavy frameworks and focuses on the domain. In-memory ticket/spot state is accepted for this assignment; state will not survive process restarts.
+- **Timezone and holiday calendar configuration:** keeps the pricing rules deterministic; the initial choices are `America/Los_Angeles` and the OPM schedule.
+- **In-memory inventory and tickets:** sufficient for the assignment scope and avoids prohibited databases, at the explicit cost of losing state across process restarts.
 
 ## Decisions still needed before implementation
 
-1. Holiday source/version and update process for the official federal dates and observed weekdays.
-2. Facility timezone identifier and daylight-saving gap/overlap behavior.
-3. For Night Owl, whether the weekday/holiday eligibility check applies to entry date only or both the entry and exit dates.
-4. Whether ticket exit is single-use, when to release the spot, and how to handle a full lot/no compatible available spot.
-5. Whether fare ties are determined from exact amounts or from final rounded-to-cents values.
-6. Whether ticket/spot state must survive process restarts despite the no-database constraint.
+1. Holiday schedule refresh/version policy for the selected OPM source.
+2. Handling of ambiguous or nonexistent facility-local times during daylight-saving transitions.
 
-These are review questions, not implementation assumptions. Stage 3 will add the verification/test plan after the design stage is reviewed.
+These are implementation details still requiring a decision, not assumptions. Stage 3 will add the verification/test plan based on this accepted design.

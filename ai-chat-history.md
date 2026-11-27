@@ -61,9 +61,19 @@ The user supplied these answers to the follow-up clarification form:
 
 > Yes, proceed to Stage 2
 
+## Stage 2 review and clarifications
+
+- Stage 2 review: “Accept Stage 2 as written”
+- Fare tie basis: “Compare exact amounts; tie only if exact values equal”
+- Night Owl weekday check: “Both entry and exit dates”
+- Holiday source: “Use the US OPM federal holiday schedule”
+- Timezone/DST: “Default to US/Los Angeles for the current implementation”
+- Ticket and spot lifecycle: “The ticket should be exited once only and the spot should be realeased on a successful exit. If no compatible spot is available show an appropriate message and do not allow entry.”
+- Process restart behavior: “In-memory state is acceptable”
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
 - A stage must be reviewed and confirmed before work proceeds to the next stage.
 - Push after each stage. The GitHub CLI was authenticated as `shyamsrk`; the requested repository did not exist when checked and was created for the Stage 1 push.
-- Stage 1 covers the business specification. Stage 2 covers architecture and domain model; tests are deferred to Stage 3.
+- Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Tests are deferred to Stage 3.
