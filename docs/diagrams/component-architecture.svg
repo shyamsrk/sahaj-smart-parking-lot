@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="850" viewBox="0 0 1440 850" role="img" aria-labelledby="title description">
+  <title id="title">Smart Parking Lot component architecture</title>
+  <desc id="description">Component view showing caller, entry and exit services, the synchronized parking facility aggregate, spot inventory, ticket registry, stay, rate calculator, three pricing policies, and the time and holiday calendar dependency.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .group { font-size: 18px; font-weight: 700; fill: #1e3a8a; }
+      .heading { font-size: 16px; font-weight: 700; }
+      .body { font-size: 14px; }
+      .small { font-size: 12px; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="1440" height="850" fill="#f8fafc"/>
+  <text class="title" x="48" y="52">Smart Parking Lot | Component architecture</text>
+  <text class="subtitle" x="48" y="80">Dependencies point from orchestration to domain behavior; mutable state stays behind the facility aggregate.</text>
+
+  <rect x="48" y="144" width="178" height="124" rx="14" fill="#fff" stroke="#64748b" stroke-width="2"/>
+  <text class="heading" x="137" y="184" text-anchor="middle">Caller</text>
+  <text class="body" x="137" y="213" text-anchor="middle">Entry / exit</text>
+  <text class="body" x="137" y="236" text-anchor="middle">request</text>
+
+  <rect x="270" y="112" width="290" height="420" rx="16" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="group" x="415" y="146" text-anchor="middle">Application</text>
+  <rect x="300" y="172" width="230" height="112" rx="10" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text class="heading" x="415" y="208" text-anchor="middle">EntryService</text>
+  <text class="body" x="415" y="235" text-anchor="middle">validate · reserve · issue</text>
+  <text class="small" x="415" y="260" text-anchor="middle">default tier: None</text>
+  <rect x="300" y="316" width="230" height="140" rx="10" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text class="heading" x="415" y="352" text-anchor="middle">ExitService</text>
+  <text class="body" x="415" y="379" text-anchor="middle">validate · quote · exit</text>
+  <text class="body" x="415" y="402" text-anchor="middle">release only on success</text>
+  <text class="small" x="415" y="430" text-anchor="middle">typed errors; caller formats</text>
+
+  <rect x="600" y="112" width="390" height="420" rx="16" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text class="group" x="795" y="146" text-anchor="middle">Domain and state</text>
+  <rect x="630" y="172" width="330" height="90" rx="10" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+  <text class="heading" x="795" y="207" text-anchor="middle">ParkingFacility aggregate</text>
+  <text class="body" x="795" y="234" text-anchor="middle">one synchronized state boundary</text>
+  <rect x="630" y="290" width="155" height="102" rx="10" fill="#fff" stroke="#86efac" stroke-width="2"/>
+  <text class="heading" x="707" y="326" text-anchor="middle">SpotInventory</text>
+  <text class="body" x="707" y="352" text-anchor="middle">compatibility</text>
+  <text class="body" x="707" y="374" text-anchor="middle">lowest ID first</text>
+  <rect x="805" y="290" width="155" height="102" rx="10" fill="#fff" stroke="#86efac" stroke-width="2"/>
+  <text class="heading" x="882" y="326" text-anchor="middle">TicketRegistry</text>
+  <text class="body" x="882" y="352" text-anchor="middle">active / exited</text>
+  <text class="body" x="882" y="374" text-anchor="middle">UUID identifiers</text>
+  <rect x="630" y="420" width="330" height="76" rx="10" fill="#fff" stroke="#86efac" stroke-width="2"/>
+  <text class="heading" x="795" y="451" text-anchor="middle">ParkingStay</text>
+  <text class="body" x="795" y="476" text-anchor="middle">immutable entry / exit Instants</text>
+
+  <rect x="1030" y="112" width="360" height="420" rx="16" fill="#fff7ed" stroke="#fb923c" stroke-width="2"/>
+  <text class="group" x="1210" y="146" text-anchor="middle">Pricing</text>
+  <rect x="1060" y="172" width="300" height="84" rx="10" fill="#fff" stroke="#f97316" stroke-width="2"/>
+  <text class="heading" x="1210" y="207" text-anchor="middle">RateCalculator</text>
+  <text class="body" x="1210" y="233" text-anchor="middle">minimum exact fare · tie order · round once</text>
+  <rect x="1060" y="284" width="300" height="58" rx="10" fill="#fff" stroke="#fdba74" stroke-width="2"/>
+  <text class="heading" x="1210" y="320" text-anchor="middle">StandardHourlyPolicy</text>
+  <rect x="1060" y="360" width="300" height="58" rx="10" fill="#fff" stroke="#fdba74" stroke-width="2"/>
+  <text class="heading" x="1210" y="396" text-anchor="middle">EarlyBirdPolicy</text>
+  <rect x="1060" y="436" width="300" height="58" rx="10" fill="#fff" stroke="#fdba74" stroke-width="2"/>
+  <text class="heading" x="1210" y="472" text-anchor="middle">NightOwlPolicy</text>
+
+  <path d="M226 206 H292" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M560 228 H622" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M530 384 H580 V246 H622" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M960 214 H1052" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M795 262 V282" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M795 392 V412" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M1210 256 V276" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M1210 342 V352" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M1210 418 V428" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <rect x="270" y="584" width="1120" height="176" rx="16" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+  <text class="group" x="830" y="620" text-anchor="middle">Time and calendar dependencies</text>
+  <rect x="310" y="648" width="440" height="78" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="2"/>
+  <text class="heading" x="530" y="680" text-anchor="middle">PricingContext</text>
+  <text class="body" x="530" y="706" text-anchor="middle">America/Los_Angeles ZoneId + holiday calendar</text>
+  <rect x="810" y="648" width="520" height="78" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="2"/>
+  <text class="heading" x="1070" y="680" text-anchor="middle">FederalHolidayCalendar</text>
+  <text class="body" x="1070" y="706" text-anchor="middle">versioned annual OPM LocalDate resources · offline</text>
+  <path d="M750 687 H802" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text class="small" x="775" y="671" text-anchor="middle">uses</text>
+
+  <text class="small" x="48" y="806">Production runtime dependencies: JDK standard library only. Entry and exit compound state transitions are serialized.</text>
+</svg>

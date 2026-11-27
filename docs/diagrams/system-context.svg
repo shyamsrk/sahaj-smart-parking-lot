@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="title description">
+  <title id="title">Smart Parking Lot system context</title>
+  <desc id="description">A caller uses a single Java process containing entry and exit services, in-memory parking state, pricing policies, and repository-backed holiday data. OPM data is updated offline; there is no runtime network, database, payment, or user interface.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <marker id="dashed-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .heading { font-size: 18px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 13px; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="1280" height="700" fill="#f8fafc"/>
+  <text class="title" x="48" y="52">Smart Parking Lot | System context</text>
+  <text class="subtitle" x="48" y="80">Proposed single-process deployment boundary; payment and presentation layers are out of scope.</text>
+
+  <rect x="48" y="245" width="230" height="145" rx="14" fill="#fff" stroke="#64748b" stroke-width="2"/>
+  <text class="heading" x="163" y="282" text-anchor="middle">Caller</text>
+  <text class="body" x="163" y="314" text-anchor="middle">Supplies vehicle, tier,</text>
+  <text class="body" x="163" y="338" text-anchor="middle">ticket ID and Instants</text>
+  <text class="small" x="163" y="366" text-anchor="middle">Entry / exit requests</text>
+
+  <rect x="350" y="120" width="620" height="440" rx="18" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <rect x="350" y="120" width="620" height="54" rx="18" fill="#dbeafe"/>
+  <path d="M350 156 Q350 174 368 174 H952 Q970 174 970 156" fill="#dbeafe"/>
+  <text class="heading" x="660" y="155" text-anchor="middle">Smart Parking Lot | Java 17 process</text>
+
+  <rect x="390" y="202" width="540" height="76" rx="10" fill="#fff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="heading" x="660" y="234" text-anchor="middle">Application services</text>
+  <text class="body" x="660" y="259" text-anchor="middle">EntryService · ExitService</text>
+
+  <rect x="390" y="310" width="540" height="92" rx="10" fill="#fff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="heading" x="660" y="343" text-anchor="middle">In-memory facility aggregate</text>
+  <text class="body" x="660" y="370" text-anchor="middle">Tickets · spot inventory · serialized state changes</text>
+
+  <rect x="390" y="434" width="540" height="90" rx="10" fill="#fff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="heading" x="660" y="467" text-anchor="middle">Pricing and calendar</text>
+  <text class="body" x="660" y="494" text-anchor="middle">RateCalculator · pricing policies · LA zone · holiday data</text>
+
+  <path d="M278 286 H334" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text class="small" x="306" y="270" text-anchor="middle">request</text>
+  <path d="M334 350 H278" fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text class="small" x="306" y="373" text-anchor="middle">result</text>
+  <path d="M660 278 V302" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M660 402 V426" fill="none" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <rect x="1010" y="205" width="222" height="145" rx="14" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+  <text class="heading" x="1121" y="242" text-anchor="middle">Versioned OPM data</text>
+  <text class="body" x="1121" y="274" text-anchor="middle">Annual holiday resources</text>
+  <text class="small" x="1121" y="301" text-anchor="middle">Packaged with repository</text>
+  <text class="small" x="1121" y="324" text-anchor="middle">No runtime network calls</text>
+  <path d="M1010 323 C988 370 970 454 936 478" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#dashed-arrow)"/>
+
+  <rect x="1008" y="405" width="224" height="123" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+  <text class="heading" x="1120" y="442" text-anchor="middle">Explicitly out of scope</text>
+  <text class="body" x="1120" y="474" text-anchor="middle">Database · web API · GUI</text>
+  <text class="body" x="1120" y="500" text-anchor="middle">Payment · multi-process</text>
+
+  <rect x="48" y="608" width="1184" height="48" rx="10" fill="#e2e8f0"/>
+  <text class="body" x="640" y="638" text-anchor="middle">Runtime state is process-local and is not retained across restarts.</text>
+</svg>

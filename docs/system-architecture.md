@@ -23,21 +23,15 @@ Java 17, Maven 3.9.9, Maven Wrapper 3.9.9, and JUnit Jupiter 5.11.4 are the sele
 
 The smallest proposed deployment is a single Java process with a modular domain core and in-memory state. This avoids introducing a database, REST framework, or dependency-injection framework for a fixed, small domain.
 
-```text
-Caller / future entry point
-       |
-       v
-Application use cases
-  EntryService     ExitService
-       |                |
-       v                v
-In-memory facility state   RateCalculator
-  SpotInventory           /      |       \
-  TicketRegistry        Hourly  EarlyBird  NightOwl
-       |                   \      |       /
-       +-------------------- PricingContext
-                               ZoneId + OPM calendar
-```
+### Architecture diagrams
+
+The following diagrams visualize the proposed system boundary, internal components, and state-changing workflows:
+
+![Smart Parking Lot system context](diagrams/system-context.svg)
+
+![Smart Parking Lot component architecture](diagrams/component-architecture.svg)
+
+![Smart Parking Lot entry and exit workflows](diagrams/entry-exit-workflows.svg)
 
 The caller/entry point is intentionally not defined. It may be a small demonstration harness later, but no CLI, GUI, or network API is assumed by this design.
 

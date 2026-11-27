@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="850" viewBox="0 0 1440 850" role="img" aria-labelledby="title description">
+  <title id="title">Smart Parking Lot entry and exit workflows</title>
+  <desc id="description">Entry validates and atomically reserves a compatible spot before issuing a ticket; no spot means rejection with no ticket. Exit validates an active ticket, calculates a fare, and only on success marks the ticket exited and releases the spot.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .panel { font-size: 21px; font-weight: 700; }
+      .heading { font-size: 15px; font-weight: 700; }
+      .body { font-size: 14px; }
+      .small { font-size: 12px; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="1440" height="850" fill="#f8fafc"/>
+  <text class="title" x="48" y="52">Smart Parking Lot | Entry and exit workflows</text>
+  <text class="subtitle" x="48" y="80">Compound state changes are serialized by the in-memory facility aggregate.</text>
+
+  <rect x="48" y="120" width="650" height="660" rx="18" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="panel" x="373" y="160" text-anchor="middle">Entry | reserve then issue</text>
+  <rect x="190" y="194" width="366" height="62" rx="10" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text class="heading" x="373" y="220" text-anchor="middle">1. Validate request</text>
+  <text class="body" x="373" y="242" text-anchor="middle">vehicle · entry Instant · loyalty tier</text>
+  <path d="M373 256 V282" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="190" y="290" width="366" height="62" rx="10" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text class="heading" x="373" y="316" text-anchor="middle">2. Reserve compatible spot</text>
+  <text class="body" x="373" y="338" text-anchor="middle">lowest available canonical spot ID</text>
+  <path d="M373 352 V380" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <polygon points="373,384 490,440 373,496 256,440" fill="#fff" stroke="#f59e0b" stroke-width="2"/>
+  <text class="heading" x="373" y="436" text-anchor="middle">Spot available?</text>
+  <text class="small" x="373" y="458" text-anchor="middle">inside atomic facility operation</text>
+  <path d="M373 496 V538" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text class="small" x="390" y="522">Yes</text>
+  <rect x="190" y="546" width="366" height="86" rx="10" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <text class="heading" x="373" y="574" text-anchor="middle">3. Create active ticket</text>
+  <text class="body" x="373" y="598" text-anchor="middle">UUID · assigned spot · entry Instant</text>
+  <text class="small" x="373" y="619" text-anchor="middle">on failure: release spot and propagate error</text>
+  <path d="M373 632 V648" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="190" y="656" width="366" height="62" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text class="heading" x="373" y="682" text-anchor="middle">Return ticket</text>
+  <text class="body" x="373" y="704" text-anchor="middle">entry succeeds</text>
+  <path d="M490 440 H572 V520" fill="none" stroke="#b91c1c" stroke-width="2" marker-end="url(#arrow)"/>
+  <text class="small" x="518" y="425">No</text>
+  <rect x="520" y="528" width="150" height="90" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text class="heading" x="595" y="557" text-anchor="middle">Reject entry</text>
+  <text class="body" x="595" y="581" text-anchor="middle">No ticket issued</text>
+  <text class="small" x="595" y="601" text-anchor="middle">no spot available</text>
+
+  <rect x="742" y="120" width="650" height="660" rx="18" fill="#fff7ed" stroke="#fb923c" stroke-width="2"/>
+  <text class="panel" x="1067" y="160" text-anchor="middle">Exit | quote then release</text>
+  <rect x="884" y="194" width="366" height="62" rx="10" fill="#fff" stroke="#f97316" stroke-width="2"/>
+  <text class="heading" x="1067" y="220" text-anchor="middle">1. Find active ticket</text>
+  <text class="body" x="1067" y="242" text-anchor="middle">unknown / already-exited → typed error</text>
+  <path d="M1067 256 V282" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="884" y="290" width="366" height="62" rx="10" fill="#fff" stroke="#f97316" stroke-width="2"/>
+  <text class="heading" x="1067" y="316" text-anchor="middle">2. Validate exit Instant</text>
+  <text class="body" x="1067" y="338" text-anchor="middle">must be later than entry Instant</text>
+  <path d="M1067 352 V382" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="884" y="390" width="366" height="76" rx="10" fill="#fff" stroke="#f97316" stroke-width="2"/>
+  <text class="heading" x="1067" y="420" text-anchor="middle">3. Calculate fare quote</text>
+  <text class="body" x="1067" y="445" text-anchor="middle">applicable policies · exact minimum · final rounding</text>
+  <path d="M1067 466 V496" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <polygon points="1067,500 1184,554 1067,608 950,554" fill="#fff" stroke="#f59e0b" stroke-width="2"/>
+  <text class="heading" x="1067" y="550" text-anchor="middle">Quote succeeds?</text>
+  <text class="small" x="1067" y="572" text-anchor="middle">and validation succeeds</text>
+  <path d="M1067 608 V638" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text class="small" x="1084" y="628">Yes</text>
+  <rect x="884" y="646" width="366" height="72" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text class="heading" x="1067" y="675" text-anchor="middle">4. Mark exited; release spot</text>
+  <text class="body" x="1067" y="700" text-anchor="middle">return FareQuote; no payment</text>
+  <path d="M1184 554 H1270 V620" fill="none" stroke="#b91c1c" stroke-width="2" marker-end="url(#arrow)"/>
+  <text class="small" x="1210" y="540">No</text>
+  <rect x="1220" y="628" width="145" height="80" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text class="heading" x="1292" y="658" text-anchor="middle">Return error</text>
+  <text class="small" x="1292" y="682" text-anchor="middle">retain active state</text>
+
+  <text class="small" x="48" y="818">Ticket transition and spot release occur together only after a valid quote; a failed exit does not free the spot.</text>
+</svg>

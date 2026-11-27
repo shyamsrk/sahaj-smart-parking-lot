@@ -40,6 +40,16 @@ The source PDFs were provided from `/home/shyamsrk/` and are not copied into thi
 
 The Stage 4 design questions have been resolved and recorded. Implementation remains paused pending the next instruction.
 
+## Architecture diagrams
+
+These diagrams illustrate the system boundary, component responsibilities, and entry/exit workflows documented in [`docs/system-architecture.md`](docs/system-architecture.md).
+
+![Smart Parking Lot system context](docs/diagrams/system-context.svg)
+
+![Smart Parking Lot component architecture](docs/diagrams/component-architecture.svg)
+
+![Smart Parking Lot entry and exit workflows](docs/diagrams/entry-exit-workflows.svg)
+
 ## Design decisions and trade-offs
 
 The Stage 2 design is approved; the Stage 4 system architecture records the user's resolved choices:

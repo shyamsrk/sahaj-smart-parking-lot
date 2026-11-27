@@ -108,6 +108,10 @@ Availability check: OpenJDK 17.0.21.1 and Maven 3.9.9 are installed; JUnit Jupit
 
 > pause before going in to implementation
 
+## Architecture diagram request
+
+> Lets create system/archtiectural design daigrams as images
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
