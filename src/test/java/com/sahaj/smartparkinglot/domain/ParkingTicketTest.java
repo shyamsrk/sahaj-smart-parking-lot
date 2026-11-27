@@ -34,4 +34,18 @@ class ParkingTicketTest {
         assertFalse(ticket.isActive());
         assertThrows(TicketAlreadyExitedException.class, ticket::markExited);
     }
+
+    @Test
+    void rejectsMissingLoyaltyTier() {
+        assertThrows(NullPointerException.class,
+                () -> new ParkingTicket(ID, ENTRY_AT, VehicleType.CAR, "C-01", null));
+    }
+
+    @Test
+    void rejectsMissingOrBlankSpotId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new ParkingTicket(ID, ENTRY_AT, VehicleType.CAR, null));
+        assertThrows(IllegalArgumentException.class,
+                () -> new ParkingTicket(ID, ENTRY_AT, VehicleType.CAR, " "));
+    }
 }

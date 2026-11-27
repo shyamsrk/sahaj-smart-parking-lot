@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted. JUnit Jupiter 5.11.4 and Maven Wrapper 3.9.9 are selected. Phase 1 domain-object tests and Phase 2 interface/configuration contract tests are implemented; service, pricing, and flow tests are deferred to the business-logic phase.
+This Stage 3 test plan is approved. It defines what should be verified before an implementation is accepted. JUnit Jupiter 5.11.4 and Maven Wrapper 3.9.9 are selected. Domain-object, pricing, calendar, and in-memory facility tests are implemented. Entry and exit behavior is tested through the in-memory facility; the application-level entry interface also has a default-loyalty contract test.
 
 The test approach uses JUnit Jupiter with Maven. Pricing and domain tests should be unit-level and deterministic; a small number of in-memory flow tests verify interaction between ticketing, spot allocation, and pricing.
 
@@ -126,4 +126,4 @@ Half-up rounding tests use direct `Money` inputs because the current configured 
 
 ## Acceptance gate
 
-Run the suite with `./mvnw test`. The implementation is ready for review only when all listed behavior tests pass, invalid inputs fail explicitly, tests use deterministic calendar/time data, and no test depends on an external database, API, or live holiday service.
+Run the suite with `./mvnw test`. Generate a JaCoCo HTML coverage report with `./mvnw org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report`; the report is written to `target/site/jacoco/index.html`. The implementation is ready for review only when behavior tests pass, invalid inputs fail explicitly, tests use deterministic calendar/time data, and no test depends on an external database, API, or live holiday service.

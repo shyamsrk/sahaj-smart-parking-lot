@@ -43,4 +43,28 @@ class ParkingStayTest {
         assertThrows(InvalidParkingStayException.class,
                 () -> new ParkingStay(ticket, Instant.parse("2026-01-05T17:00:00Z")));
     }
+
+    @Test
+    void rejectsMissingTicketOrExitInstant() {
+        Instant entry = Instant.parse("2026-01-05T16:00:00Z");
+
+        assertThrows(NullPointerException.class,
+                () -> new ParkingStay((ParkingTicket) null, entry.plusSeconds(60)));
+        assertThrows(NullPointerException.class,
+                () -> new ParkingStay(UUID.randomUUID(), "C-01", VehicleType.CAR,
+                        LoyaltyTier.NONE, entry, null));
+    }
+
+    @Test
+    void rejectsMissingOrBlankSpotId() {
+        Instant entry = Instant.parse("2026-01-05T16:00:00Z");
+        Instant exit = entry.plusSeconds(60);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new ParkingStay(UUID.randomUUID(), null, VehicleType.CAR,
+                        LoyaltyTier.NONE, entry, exit));
+        assertThrows(IllegalArgumentException.class,
+                () -> new ParkingStay(UUID.randomUUID(), " ", VehicleType.CAR,
+                        LoyaltyTier.NONE, entry, exit));
+    }
 }

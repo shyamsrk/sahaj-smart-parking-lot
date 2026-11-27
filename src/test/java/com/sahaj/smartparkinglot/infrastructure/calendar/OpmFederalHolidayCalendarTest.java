@@ -4,6 +4,8 @@ import com.sahaj.smartparkinglot.domain.exception.InvalidPricingConfigurationExc
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
@@ -32,11 +34,45 @@ class OpmFederalHolidayCalendarTest {
     }
 
     @Test
+    void rejectsMissingClassLoaderAndDate() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new OpmFederalHolidayCalendar(null));
+
+        OpmFederalHolidayCalendar calendar = new OpmFederalHolidayCalendar(emptyClassLoader());
+        assertThrows(IllegalArgumentException.class, () -> calendar.isHoliday(null));
+    }
+
+    @Test
     void rejectsMalformedDuplicateWrongYearAndEmptyResources() {
         assertInvalidResource("not-a-date\n");
         assertInvalidResource("2030-01-01\n2030-01-01\n");
         assertInvalidResource("2029-12-31\n");
+        assertInvalidResource("\n# no dates\n");
         assertInvalidResource("# no dates\n");
+    }
+
+    @Test
+    void wrapsResourceReadFailuresAsInvalidConfiguration() {
+        ClassLoader loader = new ClassLoader(null) {
+            @Override
+            public InputStream getResourceAsStream(String name) {
+                if (!"holidays/us-federal-2030.txt".equals(name)) {
+                    return null;
+                }
+                return new InputStream() {
+                    @Override
+                    public int read() throws IOException {
+                        throw new IOException("Unable to read holiday resource");
+                    }
+                };
+            }
+        };
+        OpmFederalHolidayCalendar calendar = new OpmFederalHolidayCalendar(loader);
+
+        InvalidPricingConfigurationException exception = assertThrows(
+                InvalidPricingConfigurationException.class,
+                () -> calendar.isHoliday(LocalDate.of(2030, 1, 1)));
+        assertTrue(exception.getCause() instanceof IOException);
     }
 
     private static void assertInvalidResource(String contents) {

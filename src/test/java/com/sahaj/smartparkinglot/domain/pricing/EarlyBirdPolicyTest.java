@@ -41,13 +41,20 @@ class EarlyBirdPolicyTest {
     @Test
     void requiresSameEligibleWeekdayAndRejectsHolidays() {
         assertTrue(policy.evaluate(stay(
-                monday, LocalTime.of(6, 0), monday.plusDays(1), LocalTime.of(16, 0),
+                monday, LocalTime.of(6, 0), monday.plusDays(1), LocalTime.of(5, 0),
                 VehicleType.CAR, LoyaltyTier.NONE), context()).isEmpty());
         assertNotApplicable(LocalTime.of(6, 0), LocalTime.of(16, 0),
                 context(monday));
         assertTrue(policy.evaluate(stay(
                 LocalDate.of(2026, 1, 10), LocalTime.of(6, 0),
                 LocalDate.of(2026, 1, 10), LocalTime.of(16, 0),
+                VehicleType.CAR, LoyaltyTier.NONE), context()).isEmpty());
+    }
+
+    @Test
+    void rejectsStaysLongerThanTwentyFourHours() {
+        assertTrue(policy.evaluate(stay(
+                monday, LocalTime.of(6, 0), monday.plusDays(1), LocalTime.of(6, 1),
                 VehicleType.CAR, LoyaltyTier.NONE), context()).isEmpty());
     }
 

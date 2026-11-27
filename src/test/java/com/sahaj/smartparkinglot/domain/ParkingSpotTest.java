@@ -61,5 +61,6 @@ class ParkingSpotTest {
     @Test
     void rejectsBlankSpotId() {
         assertThrows(IllegalArgumentException.class, () -> new ParkingSpot(" ", SpotType.COMPACT));
+        assertThrows(IllegalArgumentException.class, () -> new ParkingSpot(null, SpotType.COMPACT));
     }
 }
