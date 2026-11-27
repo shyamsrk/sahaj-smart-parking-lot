@@ -59,7 +59,7 @@ Reservation and ticket issuance must not leave a reserved spot without a usable 
 1. Resolve the ticket and validate required fields and `exitAt > entryAt`.
 2. Construct a `ParkingStay` from the ticket's entry data and the supplied exit instant.
 3. Convert timestamps to facility-local calendar/time values for window and holiday checks. Preserve elapsed duration independently of the local wall clock.
-4. Ask each policy for either no candidate (inapplicable) or a `FareQuote`.
+4. Ask each policy for either no candidate (inapplicable) or a `FareCandidate`.
 5. Select the least expensive exact candidate; use Early Bird, Night Owl, then Standard Hourly only when exact amounts tie. Amounts that become equal only after rounding are not ties.
 6. Round the selected amount once to cents using half-up rounding and return the final quote.
 
@@ -77,8 +77,9 @@ For stays over 24 elapsed hours, the calculator excludes both specials and evalu
 | `LoyaltyTier` | Enum: None, Silver, Gold, Platinum | Maps to 0%, 10%, 20%, or 30% discount respectively. |
 | `ParkingStay` | Value object: ticket facts plus exit instant | Requires exit after entry; provides elapsed duration and facility-local dates/times via context. |
 | `Money` | Value object: exact amount in USD | Uses decimal-safe arithmetic; performs half-up rounding only at the final-fare boundary. |
+| `FareCandidate` | Value object: policy identity and exact USD amount | Preserves an unrounded policy result for best-fare comparison. |
 | `FareQuote` | Value object: policy identity, exact candidate amount, final rounded amount | Carries the reason/policy selected for a customer-visible calculation result. |
-| `RatePolicy` | Behavior contract | Given a valid stay and pricing context, returns a candidate only if its policy applies. |
+| `RatePolicy` | Behavior contract | Given a valid stay and pricing context, returns an optional `FareCandidate`. |
 | `PricingContext` | Value/configuration object | Holds the facility timezone (default `America/Los_Angeles` for the current implementation) and OPM holiday-calendar dependency. |
 
 Domain objects own invariants and domain behavior; use cases coordinate them. Avoid exposing mutable ticket or spot state directly. The model is intentionally independent of database, web, UI, and payment frameworks.
@@ -87,7 +88,7 @@ Domain objects own invariants and domain behavior; use cases coordinate them. Av
 
 ### Shared policy contract
 
-Each policy receives a validated `ParkingStay` and `PricingContext`, and returns an optional exact `FareQuote`. It does not choose the winner or round an intermediate amount. This lets `RateCalculator` exhaustively evaluate policies while the policy classes remain independently understandable and testable.
+Each policy receives a validated `ParkingStay` and `PricingContext`, and returns an optional exact `FareCandidate`. It does not choose the winner or round an intermediate amount. `RateCalculator` compares candidates by exact amount and creates one final `FareQuote` for the selected candidate. This lets the policy classes remain independently understandable and testable.
 
 ### Standard Hourly
 

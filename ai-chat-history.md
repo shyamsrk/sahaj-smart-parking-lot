@@ -112,6 +112,14 @@ Availability check: OpenJDK 17.0.21.1 and Maven 3.9.9 are installed; JUnit Jupit
 
 > Lets create system/archtiectural design daigrams as images
 
+## Implementation phase request
+
+> Let's generate the code now. Follow the instructions
+> 1. Do not go for a one shot generation. Approach phase by phase.
+> 2. Generate the code phases in the order Domain objects, Interfaces, and then the Business logic.
+> 3. Write the required unit tests for each phase and push the code when all the tests are passing.
+> 4. Pause and confirm for the next stage.
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.

@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-System design updated with the user's decisions on the previously open questions. It refines the approved business specification and domain model for the selected Java technology stack. This document does not start implementation; implementation remains paused for user direction.
+System design updated with the user's decisions on the previously open questions. It refines the approved business specification and domain model for the selected Java technology stack. Implementation is proceeding in user-directed phases.
 
 The design covers ticket entry, in-memory spot assignment, fee calculation at exit, and the test/build structure. Payment, a web API, GUI, database, and multi-process deployment remain out of scope.
 
@@ -15,7 +15,7 @@ The design covers ticket entry, in-memory spot assignment, fee calculation at ex
 | Tests | JUnit Jupiter 5.11.4; artifacts are present in the local Maven cache |
 | Production dependencies | JDK standard library only |
 | Build reproducibility | Include Maven Wrapper pinned to 3.9.9 |
-| Project build configuration | No `pom.xml` or Maven Wrapper exists yet |
+| Project build configuration | Maven project scaffold added in Phase 1 |
 
 Java 17, Maven 3.9.9, Maven Wrapper 3.9.9, and JUnit Jupiter 5.11.4 are the selected implementation stack. No dependency was downloaded and no build or test was run during this design stage.
 
@@ -49,9 +49,9 @@ The caller/entry point is intentionally not defined. It may be a small demonstra
 - **`SpotInventory`** checks the fixed vehicle/spot matrix, reserves an available compatible spot, and releases a spot only for the matching exited ticket.
 - **`ParkingTicket`** holds ID, entry instant, vehicle type, assigned spot ID, loyalty tier, and `ACTIVE`/`EXITED` state. A successful exit is allowed once.
 - **`ParkingStay`** is an immutable calculation input derived from an active ticket and a later exit instant.
-- **`RateCalculator`** evaluates every policy applicable to the stay, selects the least exact amount, applies the confirmed exact-tie precedence, and rounds the winning amount once.
-- **`StandardHourlyPolicy`, `EarlyBirdPolicy`, and `NightOwlPolicy`** contain their own eligibility and price calculation rules and return no candidate when inapplicable.
-- **`Money` and `FareQuote`** carry exact USD amounts and selected-policy details; money arithmetic must not use binary floating point.
+- **`RateCalculator`** evaluates every policy applicable to the stay, selects the least exact amount, applies the confirmed exact-tie precedence, and rounds the winning amount once into a `FareQuote`.
+- **`StandardHourlyPolicy`, `EarlyBirdPolicy`, and `NightOwlPolicy`** contain their own eligibility and price calculation rules and return an exact `FareCandidate` when applicable.
+- **`Money`, `FareCandidate`, and `FareQuote`** carry exact USD amounts and selected-policy details; money arithmetic must not use binary floating point.
 
 ### Calendar and time boundary
 
@@ -143,4 +143,4 @@ These typed domain/application exceptions are handled by the caller; message for
 - **Ticket IDs:** Use JDK UUIDs.
 - **Errors:** Use typed domain/application exceptions; caller code is responsible for message formatting.
 
-No implementation starts until the next instruction.
+Each implementation phase is reviewed and confirmed before proceeding to the next.

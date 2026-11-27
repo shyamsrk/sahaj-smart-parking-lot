@@ -1,12 +1,22 @@
 # Smart Parking Lot Rate Calculator
 
-This repository is being developed as a design-first plan for a smart, multi-level parking lot. Its intended scope is ticket issuance, assigning a compatible parking spot, and calculating the lowest valid parking fee when a vehicle exits. Payment processing is explicitly out of scope.
+This repository contains the approved design and phased Java implementation for ticket issuance, compatible spot assignment, and lowest-valid-fare calculation. Payment processing is explicitly out of scope.
 
-The plan follows the supplied assignment constraints: keep the design simple, use standard libraries, separate domain behavior from state, and define meaningful validation and tests. Java 17, Maven, and JUnit were selected for a future implementation; the project has no `pom.xml` or implementation code yet.
+The implementation follows the approved design: keep the system simple, use Java 17 and JDK production libraries, separate domain behavior from application orchestration, and verify behavior with JUnit.
 
 ## Project status
 
-Stages 1-3 (business specification, architecture/domain model, and test strategy/scenario matrix) are approved and published. Stage 4 (system architecture) has been updated with the resolved decisions; implementation remains paused.
+Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects and unit tests) is complete; interfaces and business logic await confirmation between phases.
+
+## Build and tests
+
+Run the current unit test suite with:
+
+```sh
+./mvnw test
+```
+
+The Phase 1 domain suite currently passes all 18 tests.
 
 ## Confirmed decisions
 
