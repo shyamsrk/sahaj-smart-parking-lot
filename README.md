@@ -6,7 +6,7 @@ The implementation follows the approved design: keep the system simple, use Java
 
 ## Project status
 
-Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects and unit tests) is complete; interfaces and business logic await confirmation between phases.
+Stages 1-4 (business specification, domain design, test strategy, and system architecture) are approved and published. Phase 1 (domain objects and unit tests) is complete; Phase 2 (interfaces and their contract tests) is underway. Business logic awaits confirmation between phases.
 
 ## Build and tests
 
@@ -16,7 +16,7 @@ Run the current unit test suite with:
 ./mvnw test
 ```
 
-The Phase 1 domain suite currently passes all 18 tests.
+The current domain and interface-contract suite is run with `./mvnw test`.
 
 ## Confirmed decisions
 

@@ -120,6 +120,10 @@ Availability check: OpenJDK 17.0.21.1 and Maven 3.9.9 are installed; JUnit Jupit
 > 3. Write the required unit tests for each phase and push the code when all the tests are passing.
 > 4. Pause and confirm for the next stage.
 
+## Phase 1 confirmation
+
+> Yes, proceed to Phase 2
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.

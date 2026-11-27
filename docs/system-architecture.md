@@ -93,8 +93,9 @@ pom.xml
 src/
   main/java/com/sahaj/smartparkinglot/
     application/       EntryService, ExitService
+    application/port/  SpotInventory, TicketRegistry, TicketIdGenerator
     domain/            ParkingFacility, ParkingTicket, ParkingSpot, ParkingStay
-    domain/pricing/    Money, FareQuote, RateCalculator, RatePolicy, policy classes
+    domain/pricing/    Money, FareQuote, FareCalculator, RateCalculator, RatePolicy, policy classes
     domain/time/       PricingContext, FederalHolidayCalendar
     infrastructure/   in-memory inventory/state and OPM calendar data adapter
   test/java/com/sahaj/smartparkinglot/
