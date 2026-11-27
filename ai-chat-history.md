@@ -71,9 +71,13 @@ The user supplied these answers to the follow-up clarification form:
 - Ticket and spot lifecycle: “The ticket should be exited once only and the spot should be realeased on a successful exit. If no compatible spot is available show an appropriate message and do not allow entry.”
 - Process restart behavior: “In-memory state is acceptable”
 
+## Stage 3 authorization
+
+> Yes, proceed to Stage 3
+
 ## Recorded decisions
 
 - Repository should be named `shyamsrk/sahaj-smart-parking-lot` and public. The exact owner login was later confirmed as `shyamsrk`.
 - A stage must be reviewed and confirmed before work proceeds to the next stage.
 - Push after each stage. The GitHub CLI was authenticated as `shyamsrk`; the requested repository did not exist when checked and was created for the Stage 1 push.
-- Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Tests are deferred to Stage 3.
+- Stage 1 covers the business specification. Stage 2 covers architecture and domain model, including confirmed one-time exit, spot release, no-space rejection, in-memory state, OPM holiday calendar, Los Angeles timezone default, exact tie comparison, and both-date Night Owl eligibility. Stage 3 documents test strategy and scenarios.

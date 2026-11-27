@@ -6,7 +6,7 @@ The plan follows the supplied assignment constraints: keep the design simple, us
 
 ## Project status
 
-Stage 1 (business specification) and Stage 2 (architecture and domain model) are approved and published. Stage 3 will add the verification and test plan; no later stage will be treated as approved until reviewed.
+Stage 1 (business specification) and Stage 2 (architecture and domain model) are approved and published. Stage 3 (test strategy and scenario matrix) is drafted for review; no later stage will be treated as approved until reviewed.
 
 ## Confirmed decisions
 
@@ -54,4 +54,4 @@ The Stage 2 design is approved; these choices and trade-offs are recorded for im
 - Use the US OPM federal holiday schedule, including observed weekdays, as the holiday-calendar source.
 - Keep the domain plan independent of a database, web API, UI, payment framework, and selected language, as required by the assignment; use in-memory state for this assignment.
 
-See [`docs/specification.md`](docs/specification.md) for the functional specification and acceptance criteria, [`docs/design.md`](docs/design.md) for the draft architecture and domain objects, and [`ai-chat-history.md`](ai-chat-history.md) for the user prompts and decisions recorded for this project.
+See [`docs/specification.md`](docs/specification.md) for the functional specification and acceptance criteria, [`docs/design.md`](docs/design.md) for the approved architecture and domain objects, [`docs/test-plan.md`](docs/test-plan.md) for the draft test strategy, and [`ai-chat-history.md`](ai-chat-history.md) for the user prompts and decisions recorded for this project.
